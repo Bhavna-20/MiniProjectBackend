@@ -15,17 +15,14 @@ export class PostsService {
     }
   }
 
-  async findAll(userId: string, categoryId: string) {
+  async findAll(page?: number, perPage?: number) {
     try {
+      const skip = (page - 1) * perPage;
+      const take = +perPage;
       return await this.prismaService.post.findMany({
-        where: {
-          userId,
-          categories: {
-            some: {
-              id: categoryId ? categoryId : undefined,
-            },
-          },
-        },
+        skip: skip ? skip : undefined,
+        take: take ? take : undefined,
+        orderBy: { updatedAt: 'desc' },
         select: {
           id: true,
           title: true,
@@ -41,7 +38,13 @@ export class PostsService {
 
   async findOne(id: string) {
     try {
-      return await this.prismaService.post.findUnique({ where: { id } });
+      return await this.prismaService.post.findUnique({
+        where: { id },
+        include: {
+          author: true,
+          categories: true,
+        },
+      });
     } catch (error) {
       throw new Error(`Failed to fetch post with ID ${id}: ${error.message}`);
     }

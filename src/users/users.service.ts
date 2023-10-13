@@ -6,14 +6,17 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
   create(createUserDto: CreateUserDto) {
     return this.prismaService.user.create({ data: createUserDto });
   }
 
   async findAll(query: Prisma.UserInclude) {
     try {
-      return await this.prismaService.user.findMany({ include: query });
+      return await this.prismaService.user.findMany({
+        include: query,
+        orderBy: { updatedAt: 'desc' },
+      });
     } catch (error) {
       throw new Error(`Unable to retrieve users: ${error.message}`);
     }

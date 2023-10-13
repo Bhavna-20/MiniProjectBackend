@@ -16,16 +16,21 @@ import { isEmpty } from 'src/util';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) { }
 
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
+  // @Get()
+  // findAll(@Query() query: QueryCategoryDto) {
+  //   return this.categoriesService.findAll(isEmpty(query) ? null : query);
+  // }
+
   @Get()
-  findAll(@Query() query: QueryCategoryDto) {
-    return this.categoriesService.findAll(isEmpty(query) ? null : query);
+  findAll(@Query('page') page: number, @Query('perPage') perPage: number) {
+    return this.categoriesService.findAll(page, perPage);
   }
 
   @Get(':id')

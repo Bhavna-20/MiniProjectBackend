@@ -18,7 +18,7 @@ import { isEmpty } from '../util';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @Post()
   @UseGuards(JwtGuard)
@@ -34,14 +34,8 @@ export class PostsController {
   }
 
   @Get()
-  findAll(
-    @Query('userId') userId: string,
-    @Query('categoryId') categoryId: string,
-  ) {
-    return this.postsService.findAll(
-      isEmpty(userId) ? null : userId,
-      isEmpty(categoryId) ? null : categoryId,
-    );
+  findAll(@Query('page') page: number, @Query('perPage') perPage: number) {
+    return this.postsService.findAll(page, perPage);
   }
 
   @Get(':id')
